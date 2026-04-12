@@ -1,13 +1,15 @@
-from django.views.generic import View
-from django.shortcuts import render
-from django.contrib.auth import authenticate, login, logout 
-from django.shortcuts import redirect
+from django.views.generic import View, TemplateView
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 class Login(View):
     def get(self, request):
-        contexto = {}
-        return render(request, 'autenticacao.html', contexto)
-    
+        if request.user.is_authenticated:
+            return redirect('home')
+        return render(request, 'autenticacao.html', {})
+
     def post(self, request):
         nome_usuario = request.POST.get('username')
         senha = request.POST.get('password')
@@ -17,10 +19,18 @@ class Login(View):
         if usuario is not None:
             if usuario.is_active:
                 login(request, usuario)
-                return redirect('listar_veiculos')
+                return redirect('home')  
             else:
-                contexto = {'erro': 'Email ou senha inválidos.'}
-                return render(request, 'autenticacao.html', contexto)
+                return render(request, 'autenticacao.html', {'erro': 'Usuário inativo.'})
         else:
-            contexto = {'erro': 'Email ou senha inválidos.'}
-            return render(request, 'autenticacao.html', contexto)
+            return render(request, 'autenticacao.html', {'erro': 'Usuário ou senha inválidos.'})
+
+
+class Home(LoginRequiredMixin, TemplateView):
+    template_name = 'home.html'
+
+
+class Logout(View):
+    def get(self, request):
+        logout(request)
+        return redirect('index')
