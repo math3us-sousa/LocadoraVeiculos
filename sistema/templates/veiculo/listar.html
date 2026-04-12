@@ -1,0 +1,10 @@
+<ul>
+    {% for veiculo in veiculos %}
+        <li>
+            {{ veiculo.marca }} - {{ veiculo.modelo }} - {{ veiculo.ano }} - {{ veiculo.cor }} - {{ veiculo.combustivel }}
+            {% if veiculo.foto %}
+                <img src="{{ veiculo.foto.url }}" alt="Foto do veículo" width="100">
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
