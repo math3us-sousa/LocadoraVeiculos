@@ -72,7 +72,5 @@ Se preferir utilizar contentores, o projeto já possui o ficheiro configurado:
 ```bash
 docker build -t locadora_veiculos .
 docker run -p 8000:8000 locadora_veiculos
-```
-```
 
 ***
