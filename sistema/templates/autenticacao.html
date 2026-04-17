@@ -1,65 +1,329 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-    {% load static %} <!-- Carrega a biblioteca de arquivos estáticos do Django, permitindo o uso de arquivos CSS, JavaScript e imagens. -->
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login sistema</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <title>Midnight Fleet - Login</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+
+    <style>
+        :root {
+            --mf-bg:           #060e20;
+            --mf-surface-low:  #091328;
+            --mf-surface-high: #141f38;
+            --mf-outline:      #40485d;
+            --mf-primary:      #84adff;
+            --mf-primary-dim:  #0070ea;
+            --mf-on-surface:   #dee5ff;
+            --mf-on-variant:   #a3aac4;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--mf-bg);
+            color: var(--mf-on-surface);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Background orbs ── */
+        .orb-top {
+            position: fixed; top: -10%; right: -10%;
+            width: 60%; height: 60%;
+            background: radial-gradient(circle, rgba(0,112,234,0.12) 0%, transparent 70%);
+            border-radius: 50%; filter: blur(80px);
+            pointer-events: none; z-index: 0;
+        }
+        .orb-bottom {
+            position: fixed; bottom: -5%; left: -5%;
+            width: 40%; height: 40%;
+            background: radial-gradient(circle, rgba(255,170,247,0.06) 0%, transparent 70%);
+            border-radius: 50%; filter: blur(70px);
+            pointer-events: none; z-index: 0;
+        }
+
+        /* ── Decorative car ── */
+        .car-bg {
+            position: fixed; bottom: 0; right: 0;
+            width: 33%; height: 50%;
+            z-index: 0; opacity: 0.18;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            filter: grayscale(1);
+        }
+        .car-bg img { width: 100%; height: 100%; object-fit: cover; object-position: left bottom; }
+
+        /* ── Glass card ── */
+        .login-card {
+            width: 100%; max-width: 440px;
+            background: rgba(31, 43, 73, 0.40);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(64, 72, 93, 0.25);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        /* ── Icon circle ── */
+        .icon-circle {
+            width: 64px; height: 64px;
+            background: var(--mf-surface-high);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center; justify-content: center;
+        }
+        .icon-circle .material-symbols-outlined {
+            color: var(--mf-primary); font-size: 2rem;
+        }
+
+        /* ── Brand title ── */
+        .brand-title {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800; font-size: 1.875rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #0070ea 0%, #84adff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        .brand-subtitle {
+            color: var(--mf-on-variant);
+            font-size: 0.875rem; font-weight: 500;
+        }
+
+        /* ── Inputs ── */
+        .mf-label {
+            color: var(--mf-on-variant);
+            font-size: 0.7rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            display: block; margin-bottom: 0.375rem;
+        }
+        .mf-input-wrap {
+            position: relative; display: flex; align-items: center;
+        }
+        .mf-input-wrap .input-icon {
+            position: absolute; left: 1rem;
+            color: var(--mf-outline);
+            font-size: 1.25rem;
+            transition: color 0.2s;
+            pointer-events: none; z-index: 5;
+            font-family: 'Material Symbols Outlined';
+        }
+        .mf-input-wrap:focus-within .input-icon { color: var(--mf-primary); }
+
+        .mf-input {
+            width: 100%; height: 56px;
+            background: var(--mf-surface-low);
+            border: none;
+            border-bottom: 2px solid var(--mf-outline);
+            border-radius: 0.375rem 0.375rem 0 0;
+            color: var(--mf-on-surface);
+            padding: 0 3rem 0 3rem;
+            font-size: 0.9375rem;
+            transition: border-color 0.25s;
+            outline: none;
+        }
+        .mf-input::placeholder { color: rgba(163,170,196,0.4); }
+        .mf-input:focus {
+            border-bottom-color: var(--mf-primary);
+            box-shadow: none;
+            background: var(--mf-surface-low);
+            color: var(--mf-on-surface);
+        }
+
+        .btn-toggle-pw {
+            position: absolute; right: 1rem;
+            background: none; border: none;
+            color: var(--mf-outline); padding: 0;
+            display: flex; align-items: center;
+            cursor: pointer; transition: color 0.2s;
+        }
+        .btn-toggle-pw:hover { color: var(--mf-on-surface); }
+        .btn-toggle-pw .material-symbols-outlined { font-size: 1.25rem; }
+
+        /* ── Submit button ── */
+        .btn-mf-primary {
+            background: linear-gradient(135deg, #0070ea 0%, #84adff 100%);
+            border: none; border-radius: 0.5rem;
+            color: #002d64;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700; font-size: 1.0625rem;
+            height: 56px; width: 100%;
+            display: flex; align-items: center; justify-content: center;
+            gap: 0.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 24px rgba(0,112,234,0.25);
+            cursor: pointer;
+        }
+        .btn-mf-primary:hover  { transform: scale(1.02); }
+        .btn-mf-primary:active { transform: scale(0.96); }
+
+        /* ── Links ── */
+        .link-primary-mf {
+            color: var(--mf-primary);
+            text-decoration: none; font-weight: 500;
+            font-size: 0.875rem; transition: color 0.2s;
+        }
+        .link-primary-mf:hover { color: #6c9fff; }
+
+        /* ── OR divider ── */
+        .or-divider {
+            display: flex; align-items: center; gap: 0.75rem;
+            color: rgba(163,170,196,0.5);
+            font-size: 0.625rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.15em;
+        }
+        .or-divider::before, .or-divider::after {
+            content: ''; flex: 1; height: 1px;
+            background: rgba(64,72,93,0.4);
+        }
+
+        /* ── Footer ── */
+        .footer-link {
+            color: rgba(163,170,196,0.4);
+            text-decoration: none; font-size: 0.625rem;
+            font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.15em; transition: color 0.3s;
+        }
+        .footer-link:hover { color: var(--mf-primary); }
+        .footer-copy {
+            color: rgba(163,170,196,0.3); font-size: 0.625rem;
+            text-transform: uppercase; letter-spacing: 0.15em;
+        }
+
+        /* ── Error ── */
+        .alert-mf {
+            background: rgba(159,5,25,0.25);
+            border: 1px solid rgba(255,113,108,0.3);
+            color: #ffa8a3; border-radius: 0.375rem;
+            font-size: 0.875rem; padding: 0.75rem 1rem;
+        }
+    </style>
 </head>
-<body>
-    <form action="/" method="post">
-    {% csrf_token %} <!-- Gera um token CSRF (Cross-Site Request Forgery) para proteger o formulário contra ataques de falsificação de solicitação entre sites. -->
-    <section class="vh-100 gradient-custom">
-  <div class="container py-5 h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-        <div class="card bg-dark text-white" style="border-radius: 1rem;">
-          <div class="card-body p-5 text-center">
-              
-            <div class="mb-md-5 mt-md-4 pb-5">
 
-              <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
-              <p class="text-white-50 mb-5">Please enter your login and password!</p>
+<body class="d-flex flex-column">
 
-              <div class="form-floating mb-4 text-dark">
-                <input type="text" name="username" class="form-control" id="username" placeholder="Digite seu usuário" required>
-                <label for="username" class="form-label">Usuário</label>
-              </div>
+    <div class="orb-top"></div>
+    <div class="orb-bottom"></div>
 
-            <div class="form-floating mb-4 text-dark">
-              <input type="password" name="password" class="form-control" id="typePasswordX" placeholder="Password" required>
-              <label for="typePasswordX">Password</label>
+    <!-- ── Main ── -->
+    <main class="flex-grow-1 d-flex align-items-center justify-content-center p-4" style="position:relative; z-index:10;">
+
+        <form action="/" method="post" class="login-card">
+            {% csrf_token %}
+
+            <!-- Branding header -->
+            <div class="px-4 px-md-5 pt-5 pb-4 text-center">
+                <div class="icon-circle mx-auto mb-4">
+                    <span class="material-symbols-outlined">directions_car</span>
+                </div>
+                <h1 class="brand-title">Locadora de Veículos</h1>
+                <p class="brand-subtitle">Acesse sua conta para gerenciar sua jornada premium.</p>
             </div>
 
-              <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
+            <!-- Fields -->
+            <div class="px-4 px-md-5 pb-5 d-flex flex-column gap-4">
 
-              <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
+                {% if erro %}
+                <div class="alert-mf">{{ erro }}</div>
+                {% endif %}
 
-              <div class="d-flex justify-content-center text-center mt-4 pt-1">
-                <a href="#!" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
-                <a href="#!" class="text-white"><i class="fab fa-twitter fa-lg mx-4 px-2"></i></a>
-                <a href="#!" class="text-white"><i class="fab fa-google fa-lg"></i></a>
-              </div>
+                <!-- Username -->
+                <div>
+                    <label class="mf-label" for="username">Usuário</label>
+                    <div class="mf-input-wrap">
+                        <span class="material-symbols-outlined input-icon">person</span>
+                        <input
+                            type="text"
+                            name="username"
+                            id="username"
+                            class="mf-input"
+                            placeholder="Usuário"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="mf-label" for="password">Senha</label>
+                    <div class="mf-input-wrap">
+                        <span class="material-symbols-outlined input-icon">lock</span>
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            class="mf-input"
+                            placeholder="••••••••"
+                            required
+                        >
+                        <button type="button" class="btn-toggle-pw" onclick="togglePassword()">
+                            <span class="material-symbols-outlined" id="pw-icon">visibility</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn-mf-primary">
+                    <span>Entrar</span>
+                    <span class="material-symbols-outlined" style="font-size:1.25rem;">arrow_forward</span>
+                </button>
+
+                <!-- Secondary links -->
+                <div class="d-flex flex-column align-items-center gap-3 pt-1">
+                    <a href="#" class="link-primary-mf">Esqueci minha senha</a>
+                    <div class="or-divider w-100">ou</div>
+                    <p class="mb-0" style="font-size:0.875rem; color:var(--mf-on-variant);">
+                        Novo por aqui?
+                        <a href="#" class="link-primary-mf fw-bold ms-1">Criar conta</a>
+                    </p>
+                </div>
 
             </div>
-            {% if erro %}
-              <div class="alert alert-danger" role="alert">
-                {{ erro }}
-              </div>
-            {% endif %}
-            <div>
-              <p class="mb-0">Don't have an account? <a href="#!" class="text-white-50 fw-bold">Sign Up</a>
-              </p>
-            </div>
+        </form>
 
-          </div>
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer class="d-flex flex-column align-items-center gap-3 py-4 px-4" style="position:relative; z-index:10;">
+        <div class="d-flex gap-4 flex-wrap justify-content-center">
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Service</a>
+            <a href="#" class="footer-link">Fleet Insurance</a>
         </div>
-      </div>
+        <p class="footer-copy mb-0">© 2024 Midnight Fleet Experience. Editorial Collection.</p>
+    </footer>
+
+    <!-- Decorative car -->
+    <div class="car-bg">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKJlk8RaTzMTt3PHgR5aNaMCjmJ4YcgVZj7k0ZifHzNtMmvJmGehwT7tjzyro-FdfOuPszH6YGKrXVYwvqoOo-lv5ZOLtP2wWjdJ0-ITwdtLVzElS5iznpc6PNZ9DREbuiFSVntZCzkhtwR6HwwgqfXXEixaI9zkEofIWy7fsM57EcAvFpsxvdpF7sKjaMKQrjV7A7sZkg8Cq4E8et9uCljUwYDYr1cAvyO5u6bfbp8jv_63CYNMXmqZLhRt3rfYdilffJrxc1Iw" alt="Luxury car">
     </div>
-  </div>
-</section>
-</form></body>
+
+    <script>
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon  = document.getElementById('pw-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+    </script>
+</body>
 </html>
