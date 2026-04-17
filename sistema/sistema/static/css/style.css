@@ -1,10 +1,119 @@
-.gradient-custom {
-/* fallback for old browsers */
-background: #6a11cb;
+/* =========================================
+   VARIÁVEIS GLOBAIS (Midnight Fleet)
+   ========================================= */
+:root {
+    --mf-bg:           #060e20;
+    --mf-surface-low:  #091328;
+    --mf-surface-high: #141f38;
+    --mf-outline:      #40485d;
+    --mf-primary:      #84adff;
+    --mf-primary-dim:  #0070ea;
+    --mf-on-surface:   #dee5ff;
+    --mf-on-variant:   #a3aac4;
+}
 
-/* Chrome 10-25, Safari 5.1-6 */
-background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+/* =========================================
+   ESTILOS GLOBAIS (Substitui o bg-light)
+   ========================================= */
+body {
+    background-color: var(--mf-bg) !important;
+    color: var(--mf-on-surface) !important;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
 
-/* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
+.font-headline {
+    font-family: 'Manrope', sans-serif;
+}
+
+/* =========================================
+   NAVBAR & FOOTER (base.html)
+   ========================================= */
+.mf-navbar {
+    background-color: var(--mf-surface-low) !important;
+    border-bottom: 1px solid rgba(64, 72, 93, 0.25);
+}
+
+.mf-navbar-brand {
+    background: linear-gradient(135deg, #0070ea 0%, #84adff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+}
+
+.mf-nav-link {
+    color: var(--mf-on-variant) !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.mf-nav-link:hover {
+    color: var(--mf-on-surface) !important;
+}
+
+.mf-footer {
+    background-color: var(--mf-bg) !important;
+    border-top: 1px solid rgba(64, 72, 93, 0.25);
+    color: var(--mf-on-variant) !important;
+}
+
+/* =========================================
+   TELA INÍCIO (home.html)
+   ========================================= */
+.mf-home-card {
+    background-color: var(--mf-surface-low);
+    border: 1px solid rgba(64, 72, 93, 0.25);
+    border-radius: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mf-home-card:hover {
+    transform: translateY(-5px);
+    background-color: var(--mf-surface-high);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* =========================================
+   LISTAGEM DE CARROS (listar.html)
+   ========================================= */
+.custom-search-input:focus {
+    border-color: var(--mf-primary) !important;
+    box-shadow: none !important;
+}
+
+.mf-card-hover {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.mf-card-hover:hover {
+    transform: translateY(-5px);
+    background-color: var(--mf-surface-high) !important;
+}
+
+.mf-img-zoom {
+    transition: transform 0.5s ease;
+}
+
+.mf-card-hover:hover .mf-img-zoom {
+    transform: scale(1.1);
+}
+
+.btn-gradient {
+    background: linear-gradient(135deg, var(--mf-primary-dim) 0%, var(--mf-primary) 100%);
+    color: #002d64;
+    transition: transform 0.2s ease;
+    border: none;
+}
+
+.btn-gradient:hover {
+    transform: scale(1.05);
+    color: #002d64;
+}
+
+.btn-gradient:active {
+    transform: scale(0.95);
 }

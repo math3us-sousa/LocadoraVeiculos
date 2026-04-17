@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Excluir Veículo - Midnight Fleet{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-12 col-md-6">
+        <div class="p-4 p-md-5 rounded-4 shadow-lg border border-danger border-opacity-25 text-center" style="background: rgba(159, 5, 25, 0.1); backdrop-filter: blur(20px);">
+            
+            <span class="material-symbols-outlined text-danger mb-3" style="font-size: 5rem;">warning</span>
+            
+            <h2 class="font-headline fw-bold text-white mb-3">Confirmar Exclusão</h2>
+            <p class="text-white-50 mb-4 px-3">
+                Você tem certeza que deseja excluir este veículo permanentemente do sistema da <strong>Midnight Fleet</strong>? <br>
+                Esta ação apagará todos os dados e não poderá ser desfeita.
+            </p>
+            
+            <form method="POST">
+                {% csrf_token %}
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <a href="{% url 'listar-veiculos' %}" class="btn btn-outline-light rounded-3 px-4" style="color: var(--mf-on-variant); border-color: var(--mf-outline);">Cancelar</a>
+                    
+                    <button type="submit" class="btn px-5 rounded-3 fw-bold border-0" style="background: linear-gradient(135deg, #d7383b 0%, #ff716c 100%); color: #490006;">
+                        Sim, Excluir Veículo
+                    </button>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}

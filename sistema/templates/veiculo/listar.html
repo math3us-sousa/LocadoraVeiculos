@@ -1,47 +1,112 @@
 {% extends 'base.html' %}
 
-{% block title %}Veículos{% endblock %}
+{% block title %}Veículos - Midnight Fleet{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold">Veículos Cadastrados</h2>
-</div>
+<section class="mb-5 text-start pt-4">
+    <h1 class="font-headline display-4 fw-bolder mb-3 text-white">The Midnight Gallery</h1>
+    <p class="lead text-white-50" style="max-width: 600px;">Descubra nossa coleção de veículos de alta performance, mantidos meticulosamente para a melhor experiência de direção.</p>
+</section>
+
+<section class="mb-5 p-4 rounded-4 shadow-sm border border-secondary border-opacity-25" style="background: rgba(31, 43, 73, 0.4); backdrop-filter: blur(20px);">
+    <div class="row g-3 align-items-center">
+        <div class="col-12 col-lg-6">
+            <form method="GET" action="{% url 'listar-veiculos' %}" class="position-relative">
+                <span class="material-symbols-outlined position-absolute top-50 translate-middle-y text-primary" style="left: 15px;">search</span>
+                <input type="text" name="busca" value="{{ request.GET.busca }}" class="form-control custom-search-input py-3 ps-5 bg-dark text-white border-0 border-bottom border-secondary rounded-top" placeholder="Pesquisar por modelo, ano ou cor (Aperte Enter)...">
+            </form>
+        </div>
+        
+        <div class="col-12 col-lg-6 d-flex flex-wrap gap-2">
+            <button class="btn btn-dark d-flex align-items-center gap-2 border-0 rounded-3 px-3 py-2" style="background: #141f38;">
+                <span class="material-symbols-outlined fs-6">directions_car</span> Categoria <span class="material-symbols-outlined fs-6">expand_more</span>
+            </button>
+            <button class="btn btn-dark d-flex align-items-center gap-2 border-0 rounded-3 px-3 py-2" style="background: #141f38;">
+                <span class="material-symbols-outlined fs-6">payments</span> Preço <span class="material-symbols-outlined fs-6">expand_more</span>
+            </button>
+            <button class="btn btn-dark d-flex align-items-center gap-2 border-0 rounded-3 px-3 py-2" style="background: #141f38;">
+                <span class="material-symbols-outlined fs-6">branding_watermark</span> Marca <span class="material-symbols-outlined fs-6">expand_more</span>
+            </button>
+            <button class="btn btn-dark d-flex align-items-center gap-2 border-0 rounded-3 px-3 py-2" style="background: #141f38;">
+                <span class="material-symbols-outlined fs-6">event_available</span> Disponibilidade <span class="material-symbols-outlined fs-6">expand_more</span>
+            </button>
+        </div>
+    </div>
+</section>
 
 {% if veiculos %}
-<div class="table-responsive">
-    <table class="table table-striped table-hover align-middle shadow-sm bg-white rounded">
-        <thead class="table-dark">
-            <tr>
-                <th>Foto</th>
-                <th>Marca</th>
-                <th>Modelo</th>
-                <th>Ano</th>
-                <th>Cor</th>
-                <th>Combustível</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for veiculo in veiculos %}
-            <tr>
-                <td>
-                    {% if veiculo.foto %}
-                        <img src="{{ veiculo.foto.url}}" alt="Foto" width="80" height="55"
-                             style="object-fit:cover; border-radius:6px;">
-                    {% else %}
-                        <span class="text-muted">—</span>
-                    {% endif %}
-                </td>
-                <td>{{ veiculo.get_marca_display }}</td>
-                <td>{{ veiculo.modelo }}</td>
-                <td>{{ veiculo.ano }}</td>
-                <td>{{ veiculo.get_cor_display }}</td>
-                <td>{{ veiculo.get_combustivel_display }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+    {% for veiculo in veiculos %}
+    <div class="col">
+        <article class="card h-100 border-0 rounded-4 overflow-hidden mf-card-hover" style="background-color: #091328;">
+            
+            <div class="position-relative overflow-hidden" style="height: 250px;">
+                {% if veiculo.foto %}
+                    <img src="{{ veiculo.foto.url }}" alt="{{ veiculo.modelo }}" class="w-100 h-100 object-fit-cover mf-img-zoom">
+                {% else %}
+                    <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-secondary bg-opacity-25">
+                        <span class="material-symbols-outlined display-1 text-white-50">directions_car</span>
+                    </div>
+                {% endif %}
+                
+                <div class="position-absolute top-0 end-0 m-3">
+                    <span class="badge rounded-pill bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-3 py-2 text-uppercase" style="letter-spacing: 2px; backdrop-filter: blur(5px);">Disponível</span>
+                </div>
+            </div>
+
+            <div class="card-body p-4 d-flex flex-column text-white">
+                
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <p class="text-primary fw-bold text-uppercase mb-1" style="font-size: 0.75rem; letter-spacing: 2px;">{{ veiculo.get_marca_display }}</p>
+                        <h3 class="card-title fw-bold m-0 font-headline">{{ veiculo.modelo }}</h3>
+                    </div>
+                    <span class="text-white-50 small">{{ veiculo.ano }}</span>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <div class="d-flex align-items-center gap-2 px-3 py-1 rounded-3" style="background: rgba(54, 72, 91, 0.3);">
+                        <span class="material-symbols-outlined text-primary fs-6">palette</span>
+                        <span class="small" style="color: #bfd2e9;">{{ veiculo.get_cor_display }}</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 px-3 py-1 rounded-3" style="background: rgba(54, 72, 91, 0.3);">
+                        <span class="material-symbols-outlined text-primary fs-6">local_gas_station</span>
+                        <span class="small" style="color: #bfd2e9;">{{ veiculo.get_combustivel_display }}</span>
+                    </div>
+                </div>
+
+                <div class="mt-auto pt-4 border-top border-secondary border-opacity-25">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <span class="d-block text-white-50 small text-uppercase" style="letter-spacing: 1px;">Diária</span>
+                            <span class="fs-5 fw-bold text-white">R$ 0,00</span>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-gradient px-4 py-2 rounded-3 fw-bold border-0">Detalhes</a>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'editar-veiculo' veiculo.id %}" class="btn btn-sm flex-grow-1 fw-bold rounded-3 py-2" style="background-color: rgba(250, 204, 21, 0.1); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3);">
+                            <span class="material-symbols-outlined fs-6 align-middle">edit</span> Editar
+                        </a>
+                        <a href="{% url 'excluir-veiculo' veiculo.id %}" class="btn btn-sm flex-grow-1 fw-bold rounded-3 py-2" style="background-color: rgba(255, 113, 108, 0.1); color: #ff716c; border: 1px solid rgba(255, 113, 108, 0.3);">
+                            <span class="material-symbols-outlined fs-6 align-middle">delete</span> Excluir
+                        </a>
+                    </div>
+                </div>
+                
+            </div>
+        </article>
+    </div>
+    {% endfor %}
 </div>
+
 {% else %}
-<div class="alert alert-info">Nenhum veículo cadastrado ainda.</div>
+<div class="alert bg-dark text-white border-secondary border-opacity-25 d-flex align-items-center p-4 rounded-4 mt-4">
+    <span class="material-symbols-outlined fs-1 text-primary me-3">info</span>
+    <div>
+        <h5 class="mb-1 fw-bold">Nenhum veículo encontrado</h5>
+        <p class="mb-0 text-white-50">Não há veículos que correspondam à sua busca no momento.</p>
+    </div>
+</div>
 {% endif %}
 {% endblock %}

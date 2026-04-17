@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from .forms import FormularioVeiculo
 from django.contrib.auth.mixins import LoginRequiredMixin
 from veiculo.models import Veiculo
 from django.views.generic import View
@@ -31,20 +33,28 @@ class FotoVeiculo(LoginRequiredMixin,View):
         except Exception as exception:
             raise exception
 
-#class CriarVeiculo(LoginRequiredMixin, View):
+class CriarVeiculo(LoginRequiredMixin, CreateView):
     
-    #'''View para criar um novo veículo. Requer que o usuário esteja autenticado.'''
+    '''View para criar um novo veículo. Requer que o usuário esteja autenticado.'''
 
-    #dmodel = Veiculo
-    #form_class = FormularioVeiculo
-    #template_name = 'veiculo/novo.html'
-    #success_url = reverse_lazy('listar-veiculos')
+    model = Veiculo
+    form_class = FormularioVeiculo
+    template_name = 'veiculo/novo.html'
+    success_url = reverse_lazy('listar-veiculos')
 
-#class EditarVeiculo(LoginRequiredMixin, View):
+class EditarVeiculo(LoginRequiredMixin, UpdateView):
     
-    #'''View para editar um veículo existente. Requer que o usuário esteja autenticado.'''
+    '''View para editar um veículo existente. Requer que o usuário esteja autenticado.'''
 
-    #model = Veiculo
-    #form_class = FormularioVeiculo
-    #template_name = 'veiculo/editar.html'
-    #success_url = reverse_lazy('listar-veiculos')
+    model = Veiculo
+    form_class = FormularioVeiculo
+    template_name = 'veiculo/editar.html'
+    success_url = reverse_lazy('listar-veiculos')
+
+class ExcluirVeiculo(LoginRequiredMixin, DeleteView):
+    
+    '''View para excluir um veículo existente. Requer que o usuário esteja autenticado.'''
+
+    model = Veiculo
+    template_name = 'veiculo/deletar.html'
+    success_url = reverse_lazy('listar-veiculos')
