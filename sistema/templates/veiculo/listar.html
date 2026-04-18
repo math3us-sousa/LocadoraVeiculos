@@ -9,29 +9,33 @@
 </section>
 
 <section class="mb-5 p-4 rounded-4 shadow-sm border border-secondary border-opacity-25" style="background: rgba(31, 43, 73, 0.4); backdrop-filter: blur(20px);">
-    <div class="row g-3 align-items-center">
-        <div class="col-12 col-lg-6">
-            <form method="GET" action="{% url 'listar-veiculos' %}" class="position-relative">
-                <span class="material-symbols-outlined position-absolute top-50 translate-middle-y text-primary" style="left: 15px;">search</span>
-                <input type="text" name="busca" value="{{ request.GET.busca }}" class="form-control custom-search-input py-3 ps-5 bg-dark text-white border-0 border-bottom border-secondary rounded-top" placeholder="Pesquisar por modelo, ano ou cor (Aperte Enter)...">
-            </form>
-        </div>
-        
-        <div class="col-12 col-lg-6 d-flex flex-wrap gap-2">
-            <button class="btn btn-dark d-flex align-items-center gap-2 border-0 rounded-3 px-3 py-2" style="background: #141f38;">
-                <span class="material-symbols-outlined fs-6">directions_car</span> Categoria <span class="material-symbols-outlined fs-6">expand_more</span>
-            </button>
-            <button class="btn btn-dark d-flex align-items-center gap-2 border-0 rounded-3 px-3 py-2" style="background: #141f38;">
-                <span class="material-symbols-outlined fs-6">payments</span> Preço <span class="material-symbols-outlined fs-6">expand_more</span>
-            </button>
-            <button class="btn btn-dark d-flex align-items-center gap-2 border-0 rounded-3 px-3 py-2" style="background: #141f38;">
-                <span class="material-symbols-outlined fs-6">branding_watermark</span> Marca <span class="material-symbols-outlined fs-6">expand_more</span>
-            </button>
-            <button class="btn btn-dark d-flex align-items-center gap-2 border-0 rounded-3 px-3 py-2" style="background: #141f38;">
-                <span class="material-symbols-outlined fs-6">event_available</span> Disponibilidade <span class="material-symbols-outlined fs-6">expand_more</span>
-            </button>
-        </div>
+    <form method="GET" action="{% url 'listar-veiculos' %}" class="position-relative">
+        <span class="material-symbols-outlined position-absolute top-50 translate-middle-y text-primary" style="left: 15px;">search</span>
+        <input
+            type="text"
+            name="busca"
+            value="{{ request.GET.busca }}"
+            class="form-control custom-search-input py-3 ps-5 bg-dark text-white border-0 border-bottom border-secondary rounded-top"
+            placeholder="Pesquisar por marca, modelo, ano, cor ou combustível...">
+    </form>
+
+    {% if request.GET.busca %}
+    <div class="d-flex align-items-center justify-content-between mt-3 px-1">
+        <p class="mb-0" style="color: var(--mf-on-variant); font-size: 0.875rem;">
+            {% if veiculos %}
+                <span style="color: var(--mf-primary); font-weight: 600;">{{ veiculos|length }} resultado(s)</span>
+                para "<strong style="color: var(--mf-on-surface);">{{ request.GET.busca }}</strong>"
+            {% else %}
+                Nenhum resultado para "<strong style="color: var(--mf-on-surface);">{{ request.GET.busca }}</strong>"
+            {% endif %}
+        </p>
+        <a href="{% url 'listar-veiculos' %}" class="btn btn-sm rounded-3"
+           style="background: rgba(64,72,93,0.4); color: var(--mf-on-variant); border: 1px solid rgba(64,72,93,0.4); font-size:0.8rem;">
+            <span class="material-symbols-outlined align-middle" style="font-size:0.9rem;">close</span>
+            Limpar
+        </a>
     </div>
+    {% endif %}
 </section>
 
 {% if veiculos %}
