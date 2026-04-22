@@ -8,3 +8,6 @@ class Veiculo(models.Model):
     cor = models.SmallIntegerField(choices=COR_CHOICES)
     combustivel = models.SmallIntegerField(choices=COMBUSTIVEL_CHOICES)
     foto = models.ImageField(upload_to='veiculo/fotos', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.get_marca_display()} {self.modelo} ({self.ano})"

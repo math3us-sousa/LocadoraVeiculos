@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'veiculo.apps.VeiculoConfig',
+    'anuncios.apps.AnunciosConfig',
 ]
 
 MIDDLEWARE = [
@@ -78,7 +79,7 @@ LOGIN_URL = '/'
 # ──────────────────────────────────────────────
 # EMAIL
 # Em desenvolvimento: imprime o email no terminal
-# Para produção: troque por SMTP real (veja comentário abaixo)
+# Para produção: troque por SMTP real 
 # ──────────────────────────────────────────────
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
