@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Anúncio - Midnight Fleet{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="p-4 p-md-5 rounded-4 shadow-sm border border-secondary border-opacity-25" style="background: rgba(31, 43, 73, 0.4); backdrop-filter: blur(20px);">
+
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <span class="material-symbols-outlined" style="font-size: 2.5rem; color: #facc15;">edit_note</span>
+                <div>
+                    <h2 class="font-headline fw-bold text-white m-0">Editar Anúncio</h2>
+                    <p class="mb-0 mt-1" style="color: var(--mf-on-variant); font-size: 0.85rem;">Atualize as informações do seu anúncio.</p>
+                </div>
+            </div>
+
+            <form method="POST" class="mf-form">
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <div class="d-flex justify-content-end gap-3 mt-5 pt-4 border-top border-secondary border-opacity-25">
+                    <a href="{% url 'listar-anuncios' %}" class="btn btn-outline-light rounded-3 px-4"
+                       style="color: var(--mf-on-variant); border-color: var(--mf-outline);">Cancelar</a>
+                    <button type="submit" class="btn text-dark px-5 rounded-3 fw-bold border-0" style="background-color: #facc15;">
+                        <span class="material-symbols-outlined align-middle fs-6 me-1">save</span>
+                        Salvar Alterações
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

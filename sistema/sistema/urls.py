@@ -9,10 +9,9 @@ from sistema.views import Login, Home, Logout, Registro
 urlpatterns = [
     path('', Login.as_view(), name='index'),
     path('home/', Home.as_view(), name='home'),
-    path('logout/', Logout.as_view(), name='logout'),  
+    path('logout/', Logout.as_view(), name='logout'),
     path('registro/', Registro.as_view(), name='registro'),
 
-    # Apenas as rotas de reset de senha — sem registrar 'login' nem 'logout' do Django
     path('senha/password_reset/',
          auth_views.PasswordResetView.as_view(),
          name='password_reset'),
@@ -28,6 +27,7 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('veiculo/', include('veiculo.urls')),
+    path('anuncios/', include('anuncios.urls')),
 ]
 
 if settings.DEBUG:

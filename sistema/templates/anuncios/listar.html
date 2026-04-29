@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Anúncios - Midnight Fleet{% endblock %}
+
+{% block content %}
+
+<!-- Cabeçalho -->
+<section class="mb-5 text-start pt-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+            <h1 class="font-headline display-4 fw-bolder mb-2 text-white">Anúncios</h1>
+            <p class="text-white-50 mb-0" style="max-width: 600px;">Veículos disponíveis para locação anunciados pelos usuários da plataforma.</p>
+        </div>
+        <a href="{% url 'criar-anuncio' %}" class="btn btn-gradient fw-bold px-4 py-2 rounded-3 d-flex align-items-center gap-2 text-decoration-none">
+            <span class="material-symbols-outlined fs-6">add_circle</span>
+            Novo Anúncio
+        </a>
+    </div>
+</section>
+
+<!-- Barra de busca -->
+<section class="mb-5 p-4 rounded-4 shadow-sm border border-secondary border-opacity-25" style="background: rgba(31, 43, 73, 0.4); backdrop-filter: blur(20px);">
+    <form method="GET" action="{% url 'listar-anuncios' %}" class="position-relative">
+        <span class="material-symbols-outlined position-absolute top-50 translate-middle-y text-primary" style="left: 15px;">search</span>
+        <input
+            type="text"
+            name="busca"
+            value="{{ request.GET.busca }}"
+            class="form-control custom-search-input py-3 ps-5 bg-dark text-white border-0 border-bottom border-secondary rounded-top"
+            placeholder="Pesquisar por título, descrição ou modelo do veículo...">
+    </form>
+
+    {% if request.GET.busca %}
+    <div class="d-flex align-items-center justify-content-between mt-3 px-1">
+        <p class="mb-0" style="color: var(--mf-on-variant); font-size: 0.875rem;">
+            {% if anuncios %}
+                <span style="color: var(--mf-primary); font-weight: 600;">{{ anuncios|length }} resultado(s)</span>
+                para "<strong style="color: var(--mf-on-surface);">{{ request.GET.busca }}</strong>"
+            {% else %}
+                Nenhum resultado para "<strong style="color: var(--mf-on-surface);">{{ request.GET.busca }}</strong>"
+            {% endif %}
+        </p>
+        <a href="{% url 'listar-anuncios' %}" class="btn btn-sm rounded-3"
+           style="background: rgba(64,72,93,0.4); color: var(--mf-on-variant); border: 1px solid rgba(64,72,93,0.4); font-size:0.8rem;">
+            <span class="material-symbols-outlined align-middle" style="font-size:0.9rem;">close</span>
+            Limpar
+        </a>
+    </div>
+    {% endif %}
+</section>
+
+<!-- Grid de anúncios -->
+{% if anuncios %}
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+    {% for anuncio in anuncios %}
+    <div class="col">
+        <article class="card h-100 border-0 rounded-4 overflow-hidden mf-card-hover d-flex flex-column" style="background-color: #091328;">
+
+            <!-- Foto do veículo -->
+            <div class="position-relative overflow-hidden" style="height: 200px;">
+                {% if anuncio.veiculo.foto %}
+                    <img src="{{ anuncio.veiculo.foto.url }}" alt="{{ anuncio.veiculo.modelo }}" class="w-100 h-100 object-fit-cover mf-img-zoom">
+                {% else %}
+                    <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(54,72,91,0.3);">
+                        <span class="material-symbols-outlined text-white-50" style="font-size: 4rem;">directions_car</span>
+                    </div>
+                {% endif %}
+
+                <!-- Badge com a marca -->
+                <div class="position-absolute top-0 start-0 m-3">
+                    <span class="badge rounded-pill px-3 py-2 text-uppercase fw-bold"
+                          style="background: rgba(132,173,255,0.15); color: var(--mf-primary); border: 1px solid rgba(132,173,255,0.25); letter-spacing: 1px; backdrop-filter: blur(5px); font-size: 0.65rem;">
+                        {{ anuncio.veiculo.get_marca_display }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Conteúdo do card -->
+            <div class="card-body p-4 d-flex flex-column text-white">
+
+                <!-- Título e modelo -->
+                <div class="mb-3">
+                    <h3 class="card-title fw-bold font-headline mb-1" style="font-size: 1.1rem;">{{ anuncio.titulo }}</h3>
+                    <p class="text-primary fw-bold text-uppercase mb-0" style="font-size: 0.72rem; letter-spacing: 2px;">
+                        {{ anuncio.veiculo.modelo }} · {{ anuncio.veiculo.ano }}
+                    </p>
+                </div>
+
+                <!-- Descrição -->
+                <p class="mb-3" style="color: var(--mf-on-variant); font-size: 0.85rem; line-height: 1.6;">
+                    {{ anuncio.descricao|truncatechars:120 }}
+                </p>
+
+                <!-- Tags de info -->
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <div class="d-flex align-items-center gap-1 px-2 py-1 rounded-3" style="background: rgba(54,72,91,0.3); font-size: 0.78rem; color: #bfd2e9;">
+                        <span class="material-symbols-outlined text-primary" style="font-size:0.9rem;">palette</span>
+                        {{ anuncio.veiculo.get_cor_display }}
+                    </div>
+                    <div class="d-flex align-items-center gap-1 px-2 py-1 rounded-3" style="background: rgba(54,72,91,0.3); font-size: 0.78rem; color: #bfd2e9;">
+                        <span class="material-symbols-outlined text-primary" style="font-size:0.9rem;">local_gas_station</span>
+                        {{ anuncio.veiculo.get_combustivel_display }}
+                    </div>
+                    <div class="d-flex align-items-center gap-1 px-2 py-1 rounded-3" style="background: rgba(54,72,91,0.3); font-size: 0.78rem; color: #bfd2e9;">
+                        <span class="material-symbols-outlined text-primary" style="font-size:0.9rem;">person</span>
+                        {{ anuncio.usuario.username }}
+                    </div>
+                </div>
+
+                <!-- Rodapé do card -->
+                <div class="mt-auto pt-3 border-top border-secondary border-opacity-25">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <span class="d-block text-white-50 small text-uppercase" style="letter-spacing: 1px; font-size: 0.65rem;">Valor / Diária</span>
+                            <span class="fs-5 fw-bold text-white">R$ {{ anuncio.valor }}</span>
+                        </div>
+                        <span class="text-white-50" style="font-size: 0.72rem;">
+                            {{ anuncio.data_criacao|date:"d/m/Y" }}
+                        </span>
+                    </div>
+
+                    <!-- Botões de ação -->
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'editar-anuncio' anuncio.id %}"
+                           class="btn btn-sm flex-grow-1 fw-bold rounded-3 py-2"
+                           style="background-color: rgba(250,204,21,0.1); color: #facc15; border: 1px solid rgba(250,204,21,0.3);">
+                            <span class="material-symbols-outlined fs-6 align-middle">edit</span> Editar
+                        </a>
+                        <a href="{% url 'excluir-anuncio' anuncio.id %}"
+                           class="btn btn-sm flex-grow-1 fw-bold rounded-3 py-2"
+                           style="background-color: rgba(255,113,108,0.1); color: #ff716c; border: 1px solid rgba(255,113,108,0.3);">
+                            <span class="material-symbols-outlined fs-6 align-middle">delete</span> Excluir
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </article>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="alert bg-dark text-white border-secondary border-opacity-25 d-flex align-items-center p-4 rounded-4 mt-4">
+    <span class="material-symbols-outlined fs-1 text-primary me-3">campaign</span>
+    <div>
+        <h5 class="mb-1 fw-bold">Nenhum anúncio encontrado</h5>
+        <p class="mb-0 text-white-50">
+            {% if request.GET.busca %}
+                Tente outros termos de busca ou <a href="{% url 'listar-anuncios' %}" class="text-primary">limpe o filtro</a>.
+            {% else %}
+                Seja o primeiro a <a href="{% url 'criar-anuncio' %}" class="text-primary">criar um anúncio</a>.
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
