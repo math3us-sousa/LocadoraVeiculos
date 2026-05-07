@@ -5,10 +5,13 @@ from django.views.generic import View
 from django.http import Http404, FileResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
-
 from veiculo.models import Veiculo
 from veiculo.consts import MARCA_CHOICES, COR_CHOICES, COMBUSTIVEL_CHOICES
 from .forms import FormularioVeiculo
+from rest_framework.generics import ListAPIView
+from veiculo.serializers import SerializadorVeiculo
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 
 class listarVeiculos(LoginRequiredMixin, ListView):
@@ -70,3 +73,11 @@ class ExcluirVeiculo(LoginRequiredMixin, DeleteView):
     model = Veiculo
     template_name = 'veiculo/deletar.html'
     success_url = reverse_lazy('listar-veiculos')
+
+class APIListarVeiculos(LoginRequiredMixin, ListAPIView):
+    serializer_class = SerializadorVeiculo
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return Veiculo.objects.filter()

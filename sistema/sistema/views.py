@@ -3,6 +3,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from sistema.forms import FormularioRegistro
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
 
 
 class Login(View):
@@ -51,3 +54,12 @@ class Registro(View):
             login(request, usuario)
             return redirect('home')
         return render(request, 'registro.html', {'form': form})
+    
+class LoginAPI(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'id': user.id, 'username': user.first_name, 'token': token.key, 'email': user.email})
